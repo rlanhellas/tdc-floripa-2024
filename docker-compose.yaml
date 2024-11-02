@@ -32,9 +32,11 @@ services:
       - ./kafka_data:/var/lib/kafka/data
 
   kconnect:
-    image: confluentinc/cp-kafka-connect:6.2.4
+    image: confluentinc/cp-kafka-connect:7.7.1
     ports:
-      - 8083:8083
+      - 8083:8083 ##rest
+      - 9999:9999 ##jmx
+      - 5005:5005 ##debug
     environment:
       - CONNECT_BOOTSTRAP_SERVERS=broker:29092
       - CONNECT_GROUP_ID=kconnect
@@ -53,8 +55,10 @@ services:
       - CONNECT_CONSUMER_MAX_POLL_INTERVAL_MS=1800000
       - CONNECT_OFFSET_FLUSH_TIMEOUT_MS=600000
       - TZ=America/Sao_Paulo
+      - KAFKA_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
       - CONNECT_KEY_CONVERTER=org.apache.kafka.connect.storage.StringConverter
       - CONNECT_VALUE_CONVERTER=org.apache.kafka.connect.storage.StringConverter
+      - KAFKA_JMX_OPTS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=kconnect -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.port=9999
     volumes:
       - "./plugins:/plugins/"
     depends_on:

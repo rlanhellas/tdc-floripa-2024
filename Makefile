@@ -17,11 +17,11 @@ help:
 .PHONY: start
 start:
 	mkdir -p sqlserver_data kafka_data zoo_data
-	docker-compose up -d
+	docker compose up -d
 
 .PHONY: stop
 stop:
-	docker-compose down --remove-orphans
+	docker compose down --remove-orphans
 
 .PHONY: init-sqlserver
 init-sqlserver:
